@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# Prefix colours with CL_ for readability
+CL_BLUE="\e[34m"
+CL_YELLOW="\e[33m"
+CL_GREEN="\e[32m"
+CL_RED="\e[31m"
+CL_NONE="\e[0m"
+
+# Warn users of overwrite
+# Prefix the read response with R_ for readability
+echo -e "${CL_RED}Warning: ${CL_YELLOW}This may overwrite existing files in the active directory!${CL_NONE}"
+read -n 1 -p "Do you wish to PROCEED? (Y/N): " R_PROCEED
+echo
+
+if [ "${R_PROCEED}" != "Y" ] && [ "${R_PROCEED}" != "y" ]; then
+    # Exit on user entry
+    echo -e "${CL_RED}Script terminated${CL_NONE}"
+    exit
+fi
+
+# Set up the python project in the active directory
+clear
+echo -e "${CL_GREEN}Setting up python project in the active directory${CL_NONE}"
+echo -e "${CL_RED}Warning: ${CL_YELLOW}The script will automatically set up the active directory, please take note of the information below.${CL_NONE}"
+echo -e "${CL_YELLOW} -> The script assumes that python3 and git are installed.${CL_NONE}"
+echo -e "${CL_YELLOW} -> The script will create the following files:${CL_NONE}"
+echo -e "${CL_YELLOW}    -> .env${CL_NONE}"
+echo -e "${CL_YELLOW}    -> .gitignore${CL_NONE}"
+echo -e "${CL_YELLOW}    -> README.md${CL_NONE}"
+echo -e "${CL_YELLOW}    -> requirements.txt${CL_NONE}"
+echo -e "${CL_YELLOW} -> The script will initialise the following:${CL_NONE}"
+echo -e "${CL_YELLOW}    -> git${CL_NONE}"
+echo -e "${CL_YELLOW}    -> python3 venv${CL_NONE}"
+echo -e "${CL_YELLOW} -> The script will add & commit the working directory to the git repo${CL_NONE}"
+echo -e "${CL_YELLOW} -> The script will ${CL_RED}not${CL_YELLOW} create the following, please do so manually:${CL_NONE}"
+echo -e "${CL_YELLOW}    -> A remote repo${CL_NONE}"
+echo -e "${CL_YELLOW}    -> A license${CL_NONE}"
+echo -e "${CL_YELLOW}    -> A .gitattributes file${CL_NONE}"
+echo -e "${CL_YELLOW}    -> A contributing guide${CL_NONE}"
+echo -e "\n"
+echo -e "${CL_GREEN}Starting setup${CL_NONE}"
+
+# Create the .env file
+# We use the single ">" to overwrite any existing files
+echo -e "Creating ${CL_GREEN}.evn${CL_NONE} file"
+echo -e "# Default .env file\nEXAMPLE_API_KEY=12345ABCDE" > .env
+
+# Initialise the venv with Python3
+echo -e "Initialising ${CL_GREEN}python3 venv${CL_NONE}"
+python3 -m venv venv
+
+# Create the gitignore file
+echo -e "Creating ${CL_GREEN}.gitignore${CL_NONE} file"
+echo -e "# The gitignore file itself\n.gitignore\n# The environment variables\n.env\n# The venv file\nvenv" > .gitignore
+
+# Create the requirements file
+echo -e "Creating ${CL_GREEN}requirements.txt${CL_NONE} file"
+echo -e "" > requirements.txt
+
+# Create the README file
+echo -e "Creating ${CL_GREEN}README.md${CL_NONE} file"
+echo -e "# Python Project\n\n## Description\n\n## Installation\n\n## Usage\n\n## Contributing\n\n## License" > README.md
+
+# Initialise git for source control
+echo -e "Initialising ${CL_GREEN}git${CL_NONE}${CL_BLUE}"
+git init
+
+# Adding working directory to git
+echo -e "${CL_NONE}Adding ${CL_GREEN}working directory${CL_NONE} to git"
+git add .
+
+# Commit the files to git
+echo -e "Committing ${CL_GREEN}working directory${CL_NONE} to git${CL_BLUE}"
+git commit -m "Initial commit"
+echo -e "${CL_NONE}"
+
+echo ""
+echo -e "${CL_YELLOW}Usage guide:${CL_CLEAR}"
+echo -e "${CL_YELLOW} -> Activate the venv using: ${CL_BLUE}~ source venv/bin/activate${CL_NONE}"
+echo -e "${CL_YELLOW} -> Deactivate the venv using: ${CL_BLUE}~ deactivate${CL_NONE}"
+echo -e "${CL_YELLOW} -> Use proper branch structure and make note of it in the contributing section of the README${CL_NONE}"
+echo -e "${CL_YELLOW} -> Create licensing for public projects${CL_NONE}"
+echo -e "${CL_YELLOW} -> Only use pip3 in the activated venv${CL_NONE}"
+echo -e "${CL_YELLOW} -> Update the requirements file with new dependencies using: ${CL_BLUE}~ pip3 freeze > requirements.txt${CL_NONE}"
+echo -e "${CL_YELLOW} -> Install dependencies (not necessary after setup) using: ${CL_BLUE}~ pip3 install -r requirements.txt${CL_NONE}"
+
+echo ""
+echo -e "${CL_GREEN}Setup complete${CL_NONE}"
+
+# End of script
+
+# Function to check if a bash script is running in venv
+# if [[ "$VIRTUAL_ENV" == "" ]]; then
+#   echo "Please launch the Virtual Environment using: 'source venv/bin/activate'"
+#   exit
+# fi
